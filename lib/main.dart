@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kusinary_app/screens/kusinary_main_screen.dart';
+import 'package:kusinary_app/screens/kusinary_product_details_screen.dart';
 
 void main() {
   runApp(KusinaryApp());
@@ -12,10 +13,22 @@ class KusinaryApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kusinary',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        brightness: Brightness.light,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: KusinaryMainScreen(),
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (context) {
+            switch (settings.name) {
+              case KusinaryProductDetailsScreen.routeName:
+                return KusinaryProductDetailsScreen();
+            }
+            return KusinaryMainScreen();
+          },
+        );
+      },
     );
   }
 }

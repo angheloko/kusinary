@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class KusinaryFavoritesScreen extends StatelessWidget {
-  static const String routeName = 'favorites';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favorite'),
+        title: Text('Favorites'),
       ),
-      body: Container(
-        color: Colors.orange,
+      body: SizedBox.expand(
+        child: Container(
+          color: Colors.orange,
+        ),
       ),
     );
   }
