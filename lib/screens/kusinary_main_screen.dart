@@ -27,7 +27,7 @@ class KusinaryMainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStateMixin {
-  final List<MainScreenView> _mainScreenViews = [
+  final List<MainScreenView> _views = [
     MainScreenView(
       index: 0,
       title: '',
@@ -55,55 +55,36 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
   ];
 
   int _currentIndex = 0;
-  List<Key> _mainScreenViewKeys;
-  List<AnimationController> _mainScreenViewFaders;
-  AnimationController _mainScreenViewHider;
+  List<Key> _viewKeys;
+  List<AnimationController> _viewFaders;
+  AnimationController _viewHider;
 
   @override
   void initState() {
     super.initState();
 
-    _mainScreenViewKeys = List<Key>.generate(
-      _mainScreenViews.length,
+    _viewKeys = List<Key>.generate(
+      _views.length,
       (index) => GlobalKey(),
     ).toList();
 
-    _mainScreenViewFaders = _mainScreenViews.map(
+    _viewFaders = _views.map(
       (MainScreenView mainScreenView) => AnimationController(vsync: this, duration: Duration(milliseconds: 200)),
     )
     .toList();
 
-    _mainScreenViewFaders[_currentIndex].value = 1.0;
+    _viewFaders[_currentIndex].value = 1.0;
 
-    _mainScreenViewHider = AnimationController(vsync: this, duration: kThemeAnimationDuration);
-    _mainScreenViewHider.forward();
-  }
-
-  bool _handleScrollNotification(ScrollNotification notification) {
-    if (notification.depth == 0) {
-      if (notification is UserScrollNotification) {
-        final UserScrollNotification userScroll = notification;
-        switch (userScroll.direction) {
-          case ScrollDirection.forward:
-            _mainScreenViewHider.forward();
-            break;
-          case ScrollDirection.reverse:
-            _mainScreenViewHider.reverse();
-            break;
-          case ScrollDirection.idle:
-            break;
-        }
-      }
-    }
-    return false;
+    _viewHider = AnimationController(vsync: this, duration: kThemeAnimationDuration);
+    _viewHider.forward();
   }
 
   @override
   void dispose() {
-    for (AnimationController controller in _mainScreenViewFaders) {
+    for (AnimationController controller in _viewFaders) {
       controller.dispose();
     }
-    _mainScreenViewHider.dispose();
+    _viewHider.dispose();
     super.dispose();
   }
 
@@ -112,35 +93,50 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
     return NotificationListener(
       onNotification: _handleScrollNotification,
       child: Scaffold(
-        body: SafeArea(
-          top: false,
-          child: Stack(
-            fit: StackFit.expand,
-            children: _mainScreenViews.map((MainScreenView mainScreenView) {
-              final Widget view = FadeTransition(
-                opacity: _mainScreenViewFaders[mainScreenView.index].drive(CurveTween(curve: Curves.fastOutSlowIn)),
-                child: KeyedSubtree(
-                  key: _mainScreenViewKeys[mainScreenView.index],
-                  child: mainScreenView.widget,
-                ),
-              );
-
-              if (mainScreenView.index == _currentIndex) {
-                _mainScreenViewFaders[mainScreenView.index].forward();
-                return view;
-              } else {
-                _mainScreenViewFaders[mainScreenView.index].reverse();
-                if (_mainScreenViewFaders[mainScreenView.index].isAnimating) {
-                  return IgnorePointer(child: view);
-                }
-                return Offstage(child: view);
-              }
-            }).toList(),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          title: TextField(
+            autofocus: false,
+            decoration: InputDecoration(
+              hintText: 'What are you craving?',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.0),
+                borderSide: BorderSide(
+                  color: Colors.red,
+                )
+              ),
+              isDense: true,
+            ),
           ),
+        ),
+        body: Stack(
+          fit: StackFit.expand,
+          children: _views.map((MainScreenView mainScreenView) {
+            final Widget view = FadeTransition(
+              opacity: _viewFaders[mainScreenView.index].drive(CurveTween(curve: Curves.fastOutSlowIn)),
+              child: KeyedSubtree(
+                key: _viewKeys[mainScreenView.index],
+                child: mainScreenView.widget,
+              ),
+            );
+
+            if (mainScreenView.index == _currentIndex) {
+              _viewFaders[mainScreenView.index].forward();
+              return view;
+            } else {
+              _viewFaders[mainScreenView.index].reverse();
+              if (_viewFaders[mainScreenView.index].isAnimating) {
+                return IgnorePointer(child: view);
+              }
+              return Offstage(child: view);
+            }
+          }).toList(),
         ),
         bottomNavigationBar: ClipRect(
           child: SizeTransition(
-            sizeFactor: _mainScreenViewHider,
+            sizeFactor: _viewHider,
             axisAlignment: -1.0,
             child: BottomNavigationBar(
               showSelectedLabels: false,
@@ -151,7 +147,7 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
                   _currentIndex = index;
                 });
               },
-              items: _mainScreenViews.map((MainScreenView view) {
+              items: _views.map((MainScreenView view) {
                 return BottomNavigationBarItem(
                   icon: Icon(
                     view.icon,
@@ -169,5 +165,24 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
         ),
       ),
     );
+  }
+
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification.depth == 0) {
+      if (notification is UserScrollNotification) {
+        final UserScrollNotification userScroll = notification;
+        switch (userScroll.direction) {
+          case ScrollDirection.forward:
+            _viewHider.forward();
+            break;
+          case ScrollDirection.reverse:
+            _viewHider.reverse();
+            break;
+          case ScrollDirection.idle:
+            break;
+        }
+      }
+    }
+    return false;
   }
 }
