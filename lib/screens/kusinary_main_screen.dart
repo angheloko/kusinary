@@ -27,64 +27,69 @@ class KusinaryMainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStateMixin {
-  final List<MainScreenView> _views = [
-    MainScreenView(
-      index: 0,
-      title: '',
-      icon: Icons.home,
-      widget: KusinaryHomeScreen(),
-    ),
-    MainScreenView(
-      index: 1,
-      title: '',
-      icon: Icons.favorite,
-      widget: KusinaryFavoritesScreen(),
-    ),
-    MainScreenView(
-      index: 2,
-      title: '',
-      icon: Icons.storefront,
-      widget: KusinaryKitchenScreen(),
-    ),
-    MainScreenView(
-      index: 3,
-      title: '',
-      icon: Icons.account_circle,
-      widget: KusinaryAccountScreen(),
-    ),
-  ];
-
+  List<MainScreenView> _views = [];
   int _currentIndex = 0;
   List<Key> _viewKeys;
-  List<AnimationController> _viewFaders;
-  AnimationController _viewHider;
+  List<AnimationController> _viewAnimationControllers;
+  AnimationController _bottomNavigationAnimationController;
 
   @override
   void initState() {
     super.initState();
+
+    _views = [
+      MainScreenView(
+        index: 0,
+        title: '',
+        icon: Icons.home,
+        widget: KusinaryHomeScreen(
+          onNavigation: () {
+            _bottomNavigationAnimationController.forward();
+          },
+        ),
+      ),
+      MainScreenView(
+        index: 1,
+        title: '',
+        icon: Icons.favorite,
+        widget: KusinaryFavoritesScreen(),
+      ),
+      MainScreenView(
+        index: 2,
+        title: '',
+        icon: Icons.storefront,
+        widget: KusinaryKitchenScreen(),
+      ),
+      MainScreenView(
+        index: 3,
+        title: '',
+        icon: Icons.account_circle,
+        widget: KusinaryAccountScreen(),
+      ),
+    ];
 
     _viewKeys = List<Key>.generate(
       _views.length,
       (index) => GlobalKey(),
     ).toList();
 
-    _viewFaders = _views.map(
+    _viewAnimationControllers = _views.map(
       (MainScreenView mainScreenView) => AnimationController(vsync: this, duration: Duration(milliseconds: 200)),
     )
     .toList();
 
-    _viewFaders[_currentIndex].value = 1.0;
+    _viewAnimationControllers[_currentIndex].value = 1.0;
 
-    _viewHider = AnimationController(vsync: this, duration: kThemeAnimationDuration);
-    _viewHider.forward();
+    _bottomNavigationAnimationController = AnimationController(vsync: this, duration: kThemeAnimationDuration);
+    _bottomNavigationAnimationController.forward();
   }
 
   @override
   void dispose() {
-    for (AnimationController controller in _viewFaders) {
+    for (AnimationController controller in _viewAnimationControllers) {
       controller.dispose();
     }
-    _viewHider.dispose();
+    _bottomNavigationAnimationController.dispose();
     super.dispose();
   }
 
@@ -115,7 +120,7 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
           fit: StackFit.expand,
           children: _views.map((MainScreenView mainScreenView) {
             final Widget view = FadeTransition(
-              opacity: _viewFaders[mainScreenView.index].drive(CurveTween(curve: Curves.fastOutSlowIn)),
+              opacity: _viewAnimationControllers[mainScreenView.index].drive(CurveTween(curve: Curves.fastOutSlowIn)),
               child: KeyedSubtree(
                 key: _viewKeys[mainScreenView.index],
                 child: mainScreenView.widget,
@@ -123,11 +128,11 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
             );
 
             if (mainScreenView.index == _currentIndex) {
-              _viewFaders[mainScreenView.index].forward();
+              _viewAnimationControllers[mainScreenView.index].forward();
               return view;
             } else {
-              _viewFaders[mainScreenView.index].reverse();
-              if (_viewFaders[mainScreenView.index].isAnimating) {
+              _viewAnimationControllers[mainScreenView.index].reverse();
+              if (_viewAnimationControllers[mainScreenView.index].isAnimating) {
                 return IgnorePointer(child: view);
               }
               return Offstage(child: view);
@@ -136,7 +141,7 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
         ),
         bottomNavigationBar: ClipRect(
           child: SizeTransition(
-            sizeFactor: _viewHider,
+            sizeFactor: _bottomNavigationAnimationController,
             axisAlignment: -1.0,
             child: BottomNavigationBar(
               showSelectedLabels: false,
@@ -173,10 +178,10 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
         final UserScrollNotification userScroll = notification;
         switch (userScroll.direction) {
           case ScrollDirection.forward:
-            _viewHider.forward();
+            _bottomNavigationAnimationController.forward();
             break;
           case ScrollDirection.reverse:
-            _viewHider.reverse();
+            _bottomNavigationAnimationController.reverse();
             break;
           case ScrollDirection.idle:
             break;
