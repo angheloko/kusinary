@@ -10,7 +10,7 @@ class KusinaryHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return GridView.builder(

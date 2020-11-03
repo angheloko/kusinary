@@ -13,6 +13,7 @@ class KusinaryApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kusinary',
       theme: ThemeData(
+        primaryColor: Colors.teal,
         brightness: Brightness.light,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),

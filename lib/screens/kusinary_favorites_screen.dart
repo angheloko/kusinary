@@ -5,7 +5,7 @@ class KusinaryFavoritesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: Container(
-        color: Colors.orange,
+        color: Colors.white,
       ),
     );
   }

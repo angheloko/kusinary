@@ -32,6 +32,7 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
   List<Key> _viewKeys;
   List<AnimationController> _viewAnimationControllers;
   AnimationController _bottomNavigationAnimationController;
+  FocusNode _searchTextFieldFocusNode;
 
   @override
   void initState() {
@@ -82,10 +83,14 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
 
     _bottomNavigationAnimationController = AnimationController(vsync: this, duration: kThemeAnimationDuration);
     _bottomNavigationAnimationController.forward();
+
+    _searchTextFieldFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
+    _searchTextFieldFocusNode.dispose();
+
     for (AnimationController controller in _viewAnimationControllers) {
       controller.dispose();
     }
@@ -98,73 +103,92 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
     return NotificationListener(
       onNotification: _handleScrollNotification,
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white,
           elevation: 0.0,
+          toolbarHeight: 80.0,
           title: TextField(
+            focusNode: _searchTextFieldFocusNode,
             autofocus: false,
             decoration: InputDecoration(
               hintText: 'What are you craving?',
               prefixIcon: Icon(Icons.search),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30.0),
-                borderSide: BorderSide(
-                  color: Colors.red,
-                )
               ),
               isDense: true,
             ),
           ),
         ),
-        body: Stack(
-          fit: StackFit.expand,
-          children: _views.map((MainScreenView mainScreenView) {
-            final Widget view = FadeTransition(
-              opacity: _viewAnimationControllers[mainScreenView.index].drive(CurveTween(curve: Curves.fastOutSlowIn)),
-              child: KeyedSubtree(
-                key: _viewKeys[mainScreenView.index],
-                child: mainScreenView.widget,
-              ),
-            );
+        body: GestureDetector(
+          onTap: () {
+            _searchTextFieldFocusNode.unfocus();
+          },
+          child: Stack(
+            fit: StackFit.expand,
+            children: _views.map((MainScreenView mainScreenView) {
+              final Widget view = FadeTransition(
+                opacity: _viewAnimationControllers[mainScreenView.index].drive(CurveTween(curve: Curves.fastOutSlowIn)),
+                child: KeyedSubtree(
+                  key: _viewKeys[mainScreenView.index],
+                  child: mainScreenView.widget,
+                ),
+              );
 
-            if (mainScreenView.index == _currentIndex) {
-              _viewAnimationControllers[mainScreenView.index].forward();
-              return view;
-            } else {
-              _viewAnimationControllers[mainScreenView.index].reverse();
-              if (_viewAnimationControllers[mainScreenView.index].isAnimating) {
-                return IgnorePointer(child: view);
+              if (mainScreenView.index == _currentIndex) {
+                _viewAnimationControllers[mainScreenView.index].forward();
+                return view;
+              } else {
+                _viewAnimationControllers[mainScreenView.index].reverse();
+                if (_viewAnimationControllers[mainScreenView.index].isAnimating) {
+                  return IgnorePointer(child: view);
+                }
+                return Offstage(child: view);
               }
-              return Offstage(child: view);
-            }
-          }).toList(),
+            }).toList(),
+          ),
         ),
         bottomNavigationBar: ClipRect(
           child: SizeTransition(
             sizeFactor: _bottomNavigationAnimationController,
             axisAlignment: -1.0,
-            child: BottomNavigationBar(
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              currentIndex: _currentIndex,
-              onTap: (int index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              items: _views.map((MainScreenView view) {
-                return BottomNavigationBarItem(
-                  icon: Icon(
-                    view.icon,
-                    color: Colors.grey.shade400,
-                  ),
-                  label: view.title,
-                  activeIcon: Icon(
-                    view.icon,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                );
-              }).toList(),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 3.0),
+              child: BottomNavigationBar(
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.grey,
+                currentIndex: _currentIndex,
+                backgroundColor: Colors.white,
+                type: BottomNavigationBarType.fixed,
+                onTap: (int index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                items: _views.map((MainScreenView view) {
+                  return BottomNavigationBarItem(
+                    icon: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 6.0,
+                        horizontal: 16.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _currentIndex == view.index
+                          ? Colors.teal[600]
+                          : Colors.transparent,
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: Icon(
+                        view.icon,
+                      ),
+                    ),
+                    label: view.title,
+                  );
+                }).toList(),
+              ),
             ),
           ),
         ),
