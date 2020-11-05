@@ -4,18 +4,19 @@ import 'package:kusinary_app/screens/kusinary_account_screen.dart';
 import 'package:kusinary_app/screens/kusinary_favorites_screen.dart';
 import 'package:kusinary_app/screens/kusinary_home_screen.dart';
 import 'package:kusinary_app/screens/kusinary_kitchen_screen.dart';
+import 'package:kusinary_app/widgets/kusinary_search.dart';
 
 class MainScreenView {
   final int index;
   final String title;
   final IconData icon;
-  final Widget widget;
+  final Widget Function() builder;
 
   MainScreenView({
     this.index,
     this.title,
     this.icon,
-    this.widget,
+    this.builder,
   });
 }
 
@@ -30,9 +31,6 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
   List<MainScreenView> _views = [];
   int _currentIndex = 0;
   List<Key> _viewKeys;
-  List<AnimationController> _viewAnimationControllers;
-  AnimationController _bottomNavigationAnimationController;
-  FocusNode _searchTextFieldFocusNode;
 
   @override
   void initState() {
@@ -41,31 +39,27 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
     _views = [
       MainScreenView(
         index: 0,
-        title: '',
+        title: 'Explore',
         icon: Icons.home,
-        widget: KusinaryHomeScreen(
-          onNavigation: () {
-            _bottomNavigationAnimationController.forward();
-          },
-        ),
+        builder: () => KusinaryHomeScreen(),
       ),
       MainScreenView(
         index: 1,
-        title: '',
+        title: 'Favorites',
         icon: Icons.favorite,
-        widget: KusinaryFavoritesScreen(),
+        builder: () => KusinaryFavoritesScreen(),
       ),
       MainScreenView(
         index: 2,
-        title: '',
+        title: 'Kitchen',
         icon: Icons.storefront,
-        widget: KusinaryKitchenScreen(),
+        builder: () => KusinaryKitchenScreen(),
       ),
       MainScreenView(
         index: 3,
-        title: '',
+        title: 'Account',
         icon: Icons.account_circle,
-        widget: KusinaryAccountScreen(),
+        builder: () => KusinaryAccountScreen(),
       ),
     ];
 
@@ -73,145 +67,50 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
       _views.length,
       (index) => GlobalKey(),
     ).toList();
-
-    _viewAnimationControllers = _views.map(
-      (MainScreenView mainScreenView) => AnimationController(vsync: this, duration: Duration(milliseconds: 200)),
-    )
-    .toList();
-
-    _viewAnimationControllers[_currentIndex].value = 1.0;
-
-    _bottomNavigationAnimationController = AnimationController(vsync: this, duration: kThemeAnimationDuration);
-    _bottomNavigationAnimationController.forward();
-
-    _searchTextFieldFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
-    _searchTextFieldFocusNode.dispose();
-
-    for (AnimationController controller in _viewAnimationControllers) {
-      controller.dispose();
-    }
-    _bottomNavigationAnimationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return NotificationListener(
-      onNotification: _handleScrollNotification,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0.0,
-          toolbarHeight: 80.0,
-          title: TextField(
-            focusNode: _searchTextFieldFocusNode,
-            autofocus: false,
-            decoration: InputDecoration(
-              hintText: 'What are you craving?',
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              isDense: true,
-            ),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: KusinarySearch(),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12.0,
         ),
-        body: GestureDetector(
-          onTap: () {
-            _searchTextFieldFocusNode.unfocus();
-          },
-          child: Stack(
-            fit: StackFit.expand,
-            children: _views.map((MainScreenView mainScreenView) {
-              final Widget view = FadeTransition(
-                opacity: _viewAnimationControllers[mainScreenView.index].drive(CurveTween(curve: Curves.fastOutSlowIn)),
-                child: KeyedSubtree(
-                  key: _viewKeys[mainScreenView.index],
-                  child: mainScreenView.widget,
-                ),
-              );
-
-              if (mainScreenView.index == _currentIndex) {
-                _viewAnimationControllers[mainScreenView.index].forward();
-                return view;
-              } else {
-                _viewAnimationControllers[mainScreenView.index].reverse();
-                if (_viewAnimationControllers[mainScreenView.index].isAnimating) {
-                  return IgnorePointer(child: view);
-                }
-                return Offstage(child: view);
-              }
-            }).toList(),
-          ),
-        ),
-        bottomNavigationBar: ClipRect(
-          child: SizeTransition(
-            sizeFactor: _bottomNavigationAnimationController,
-            axisAlignment: -1.0,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 3.0),
-              child: BottomNavigationBar(
-                showSelectedLabels: false,
-                showUnselectedLabels: false,
-                selectedItemColor: Colors.white,
-                unselectedItemColor: Colors.grey,
-                currentIndex: _currentIndex,
-                backgroundColor: Colors.white,
-                type: BottomNavigationBarType.fixed,
-                onTap: (int index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-                items: _views.map((MainScreenView view) {
-                  return BottomNavigationBarItem(
-                    icon: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 6.0,
-                        horizontal: 16.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _currentIndex == view.index
-                          ? Colors.teal[600]
-                          : Colors.transparent,
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Icon(
-                        view.icon,
-                      ),
-                    ),
-                    label: view.title,
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
+        child: IndexedStack(
+          index: _currentIndex,
+          children: _views.map<Widget>((MainScreenView view) {
+            return KeyedSubtree(
+              key: _viewKeys[view.index],
+              child: view.builder(),
+            );
+          }).toList(),
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed,
+        onTap: (int index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: _views.map((MainScreenView view) {
+          return BottomNavigationBarItem(
+            icon: Icon(
+              view.icon,
+            ),
+            label: view.title,
+          );
+        }).toList(),
+      ),
     );
-  }
-
-  bool _handleScrollNotification(ScrollNotification notification) {
-    if (notification.depth == 0) {
-      if (notification is UserScrollNotification) {
-        final UserScrollNotification userScroll = notification;
-        switch (userScroll.direction) {
-          case ScrollDirection.forward:
-            _bottomNavigationAnimationController.forward();
-            break;
-          case ScrollDirection.reverse:
-            _bottomNavigationAnimationController.reverse();
-            break;
-          case ScrollDirection.idle:
-            break;
-        }
-      }
-    }
-    return false;
   }
 }

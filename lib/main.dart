@@ -13,9 +13,19 @@ class KusinaryApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kusinary',
       theme: ThemeData(
-        primaryColor: Colors.teal,
+        primarySwatch: Colors.teal,
         brightness: Brightness.light,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        appBarTheme: AppBarTheme(
+          color: Colors.white,
+          elevation: 1.0,
+        ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.white,
+        ),
+        textTheme: TextTheme(
+          headline6: Theme.of(context).textTheme.subtitle1,
+        )
       ),
       home: KusinaryMainScreen(),
       onGenerateRoute: (settings) {
