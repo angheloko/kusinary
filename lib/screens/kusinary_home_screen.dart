@@ -17,7 +17,7 @@ class KusinaryHomeScreen extends StatelessWidget {
             crossAxisCount: 2,
             crossAxisSpacing: 4.0,
             mainAxisSpacing: 8.0,
-            childAspectRatio: 2.3 / 3,
+            childAspectRatio: 2.25 / 3,
           ),
           itemCount: 19,
           itemBuilder: (context, index) {
@@ -39,25 +39,27 @@ class KusinaryHomeScreen extends StatelessWidget {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.only(
+                          top: 8.0,
+                          right: 16.0,
+                          bottom: 16.0,
+                          left: 16.0,
+                        ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
                               'Greyhound divisively hello coldly wonderfully marginally far upon excluding.',
-                              maxLines: 2,
                               style: Theme.of(context).textTheme.bodyText1,
+                              maxLines: 2,
                             ),
                             SizedBox(
-                              height: 8.0,
+                              height: 4.0,
                             ),
                             Text(
                               'Greyhound divisively hello coldly wonderfully marginally far upon excluding.',
+                              style: Theme.of(context).textTheme.bodyText2,
                               maxLines: 1,
-                              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                color: Colors.black.withOpacity(0.6),
-                              ),
-                              overflow: TextOverflow.ellipsis,
                             ),
                             Spacer(),
                             Row(

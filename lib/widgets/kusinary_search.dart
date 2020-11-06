@@ -17,7 +17,6 @@ class KusinarySearchDelegate extends SearchDelegate {
     assert(theme != null);
     return theme.copyWith(
       primaryColor: Colors.white,
-      primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.grey),
     );
   }
 

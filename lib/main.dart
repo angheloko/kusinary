@@ -10,12 +10,17 @@ class KusinaryApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+
     return MaterialApp(
       title: 'Kusinary',
       theme: ThemeData(
         primarySwatch: Colors.teal,
         brightness: Brightness.light,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        primaryIconTheme: themeData.primaryIconTheme.copyWith(
+          color: Colors.grey[500],
+        ),
         appBarTheme: AppBarTheme(
           color: Colors.white,
           elevation: 1.0,
