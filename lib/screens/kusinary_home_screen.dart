@@ -3,10 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:kusinary_app/screens/kusinary_product_details_screen.dart';
 
 class KusinaryHomeScreen extends StatelessWidget {
-  final VoidCallback onNavigation;
-
-  const KusinaryHomeScreen({Key key, this.onNavigation}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -25,8 +21,7 @@ class KusinaryHomeScreen extends StatelessWidget {
               clipBehavior: Clip.antiAlias,
               child: InkWell(
                 onTap: () async {
-                  await Navigator.pushNamed(context, KusinaryProductDetailsScreen.routeName);
-                  this.onNavigation();
+                  Navigator.pushNamed(context, KusinaryProductDetailsScreen.routeName);
                 },
                 child: Column(
                   children: [
@@ -68,14 +63,14 @@ class KusinaryHomeScreen extends StatelessWidget {
                                 Text('₱1,000.00'),
                                 Row(
                                   children: [
+                                    Text('4.5'),
+                                    SizedBox(
+                                      width: 2.0,
+                                    ),
                                     Icon(
                                       Icons.star,
-                                      size: 14.0,
+                                      size: 16.0,
                                     ),
-                                    SizedBox(
-                                      width: 4.0,
-                                    ),
-                                    Text('4.5'),
                                   ],
                                 )
                               ],
