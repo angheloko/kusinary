@@ -24,40 +24,42 @@ class KusinaryProductDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        children: [
-          AspectRatio(
-            aspectRatio: 4 / 3,
-            child: CachedNetworkImage(
-              imageUrl: 'https://picsum.photos/250?image=9',
-              fit: BoxFit.cover,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            AspectRatio(
+              aspectRatio: 4 / 3,
+              child: CachedNetworkImage(
+                imageUrl: 'https://picsum.photos/250?image=9',
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8.0,
-              vertical: 16.0,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 16.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildTitle(context),
+                  SizedBox(height: 16.0),
+                  _buildPricing(context),
+                  SizedBox(height: 16.0),
+                  _buildMessageButton(context),
+                  SizedBox(height: 40.0),
+                  _buildIngredients(context),
+                  SizedBox(height: 40.0),
+                  _buildDeliveryOptions(context),
+                  SizedBox(height: 40.0),
+                  _buildKitchenInfo(context),
+                  SizedBox(height: 40.0),
+                  _buildReviews(context),
+                ],
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildTitle(context),
-                SizedBox(height: 16.0),
-                _buildPricing(context),
-                SizedBox(height: 16.0),
-                _buildMessageButton(context),
-                SizedBox(height: 40.0),
-                _buildIngredients(context),
-                SizedBox(height: 40.0),
-                _buildDeliveryOptions(context),
-                SizedBox(height: 40.0),
-                _buildKitchenInfo(context),
-                SizedBox(height: 40.0),
-                _buildReviews(context),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
