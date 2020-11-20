@@ -149,7 +149,7 @@ class KusinaryProductDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildMessageButton(BuildContext context) {
-    final ButtonStyle flatButtonStyle = TextButton.styleFrom(
+    final ButtonStyle buttonStyle = TextButton.styleFrom(
       primary: Colors.white,
       backgroundColor: Theme.of(context).colorScheme.primary,
     );
@@ -157,7 +157,7 @@ class KusinaryProductDetailsScreen extends StatelessWidget {
     return TextButton(
       onPressed: () {},
       child: Text('Contact kitchen'),
-      style: flatButtonStyle,
+      style: buttonStyle,
     );
   }
 

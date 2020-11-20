@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:kusinary_app/screens/kusinary_catalog_screen.dart';
 import 'package:kusinary_app/widgets/kusinary_product_slider.dart';
 
 class KusinaryHomeScreen extends StatelessWidget {
@@ -52,36 +53,41 @@ class KusinaryHomeScreen extends StatelessWidget {
             width: width * 0.27,
             child: Card(
               clipBehavior: Clip.antiAlias,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: 'https://images.unsplash.com/photo-1548228586-171fb0887ac0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=900&q=60',
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    alignment: Alignment.bottomLeft,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.center,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.black.withAlpha(0),
-                          Colors.black54,
-                        ],
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, KusinaryCatalogScreen.routeName);
+                },
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: 'https://images.unsplash.com/photo-1548228586-171fb0887ac0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=900&q=60',
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.center,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withAlpha(0),
+                            Colors.black54,
+                          ],
+                        ),
+                      ),
+                      child: Text(
+                        categories[index],
+                        maxLines: 1,
+                        overflow: TextOverflow.clip,
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    child: Text(
-                      categories[index],
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                      style: Theme.of(context).textTheme.bodyText1.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

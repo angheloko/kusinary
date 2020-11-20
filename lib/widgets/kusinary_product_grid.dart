@@ -10,14 +10,14 @@ class KusinaryProductGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 4.0,
         mainAxisSpacing: 8.0,
         childAspectRatio: kAspectRatio['width'] / kAspectRatio['height'],
       ),
-      itemCount: 3,
+      itemCount: 10,
       itemBuilder: (context, index) {
         return KusinaryProductCard();
       },

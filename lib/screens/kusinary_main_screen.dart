@@ -4,7 +4,7 @@ import 'package:kusinary_app/screens/kusinary_account_screen.dart';
 import 'package:kusinary_app/screens/kusinary_favorites_screen.dart';
 import 'package:kusinary_app/screens/kusinary_home_screen.dart';
 import 'package:kusinary_app/screens/kusinary_messages_screen.dart';
-import 'package:kusinary_app/widgets/kusinary_search.dart';
+import 'package:kusinary_app/widgets/kusinary_search_text_field.dart';
 
 class MainScreenView {
   final int index;
@@ -84,7 +84,7 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: KusinarySearch(),
+        title: KusinarySearchTextField(),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(

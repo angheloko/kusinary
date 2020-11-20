@@ -12,7 +12,7 @@ class KusinaryProductCard extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () async {
+        onTap: () {
           Navigator.pushNamed(context, KusinaryProductDetailsScreen.routeName);
         },
         child: Column(
