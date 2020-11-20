@@ -11,7 +11,6 @@ class KusinaryProductSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     double portraitWidth = size.width < size.height ? size.width : size.height;
-    print('Slider: $portraitWidth');
 
     // Aspect ratio: 2.25 / 3.
     double width = portraitWidth * .45;
