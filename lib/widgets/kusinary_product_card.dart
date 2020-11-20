@@ -20,7 +20,7 @@ class KusinaryProductCard extends StatelessWidget {
             AspectRatio(
               aspectRatio: 4 / 3,
               child: CachedNetworkImage(
-                imageUrl: 'https://picsum.photos/250?image=9',
+                imageUrl: 'https://images.unsplash.com/photo-1432139555190-58524dae6a55?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=900&q=60',
                 fit: BoxFit.cover,
               ),
             ),

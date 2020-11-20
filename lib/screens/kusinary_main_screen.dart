@@ -3,19 +3,21 @@ import 'package:flutter/rendering.dart';
 import 'package:kusinary_app/screens/kusinary_account_screen.dart';
 import 'package:kusinary_app/screens/kusinary_favorites_screen.dart';
 import 'package:kusinary_app/screens/kusinary_home_screen.dart';
-import 'package:kusinary_app/screens/kusinary_kitchen_screen.dart';
+import 'package:kusinary_app/screens/kusinary_messages_screen.dart';
 import 'package:kusinary_app/widgets/kusinary_search.dart';
 
 class MainScreenView {
   final int index;
   final String title;
   final IconData icon;
+  final IconData activeIcon;
   final Widget Function() builder;
 
   MainScreenView({
     this.index,
     this.title,
     this.icon,
+    this.activeIcon,
     this.builder,
   });
 }
@@ -40,25 +42,29 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
       MainScreenView(
         index: 0,
         title: 'Explore',
-        icon: Icons.home,
+        icon: Icons.store_outlined,
+        activeIcon: Icons.store,
         builder: () => KusinaryHomeScreen(),
       ),
       MainScreenView(
         index: 1,
         title: 'Favorites',
-        icon: Icons.favorite,
+        icon: Icons.favorite_outline,
+        activeIcon: Icons.favorite,
         builder: () => KusinaryFavoritesScreen(),
       ),
       MainScreenView(
         index: 2,
-        title: 'Kitchen',
-        icon: Icons.storefront,
-        builder: () => KusinaryKitchenScreen(),
+        title: 'Messages',
+        icon: Icons.chat_bubble_outline,
+        activeIcon: Icons.chat_bubble,
+        builder: () => KusinaryMessagesScreen(),
       ),
       MainScreenView(
         index: 3,
         title: 'Account',
-        icon: Icons.account_circle,
+        icon: Icons.account_circle_outlined,
+        activeIcon: Icons.account_circle,
         builder: () => KusinaryAccountScreen(),
       ),
     ];
@@ -106,6 +112,9 @@ class _MainScreenState extends State<KusinaryMainScreen> with TickerProviderStat
           return BottomNavigationBarItem(
             icon: Icon(
               view.icon,
+            ),
+            activeIcon: Icon(
+              view.activeIcon,
             ),
             label: view.title,
           );
